@@ -160,7 +160,7 @@ console.log(calendartypebeat)
            //    '2017-05-25': {color: 'gray'},
            //    '2017-05-26': {endingDay: true, color: 'gray'}}}
            // monthFormat={'yyyy'}
-            theme={{calendarBackground: 'black', agendaKnobColor: 'red', dayTextColor: '#fff',    monthTextColor: '#fff'}}
+            theme={{calendarBackground: 'black', agendaKnobColor: 'red', dayTextColor: '#fff',   dotColor: '#fff',  monthTextColor: '#fff'}}
            style={{height:"100%",width:"100%"}}
 
             hideExtraDays={true}
@@ -550,7 +550,7 @@ class  DashboardScreen extends React.Component{
        class  Profile extends React.Component{
 
          static navigationOptions = {
-           title: 'Dashboard',
+           title: 'Profile',
          };
 
 
@@ -575,15 +575,9 @@ class  DashboardScreen extends React.Component{
 
         </LinearGradient>
         <View style = {{bottom:"3.5%"}}>
-        <Text style = {{fontSize:48}}> Dashboard </Text>
+        <Text style = {{fontSize:48,color:'#fff'}}> Profile </Text>
         </View>
         <Feather name='menu' size={33} onPress={()=> this.props.navigation.openDrawer()} style={{right:"40%",top:"-10%",color:'#fff'}}/>
-
-         <Text style = {{fontSize:35,color:"#fff",fontFamily:"AppleSDGothicNeo-Bold"}}> Welcome Back {please}. There are quite a few volunteer events available for your NHS hours!</Text>
-
-        <View style = {{bottom:"-10%"}}>
-        <Text style = {{fontSize:35,color:"#fff",fontFamily:"AppleSDGothicNeo-Bold"}}>Keep Working hard! You are almost there! Women Empowerment! </Text>
-        </View>
 
         <Signoutbutton
         onPress = {() =>Alert.alert(
