@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, Image,TouchableOpacity,TextInput,Alert,Linking,Button,SafeAreaView, ScrollView,Dimensions } from 'react-native';
 import * as Font from 'expo-font'
-import Unknown3 from './assets/dteimage.png';
+import Unknown3 from './assets/imageedit_1_4305038960.png';
 import Firebase from './components/firebase.js'
 import 'react-native-gesture-handler';
 import { createAppContainer, createSwitchNavigator, } from 'react-navigation';
@@ -9,10 +9,15 @@ import { createDrawerNavigator,DrawerItems } from 'react-navigation-drawer'
 import { LinearGradient } from 'expo-linear-gradient';
 import HomButton from './components/homebutton.js';
 import Signoutbutton from './components/signoutbutton.js'
-import {AntDesign,Feather} from 'react-native-vector-icons';
+import {AntDesign,Feather,Entypo,Ionicons,Octicons,MaterialIcons} from 'react-native-vector-icons';
 import {CalendarList, Agenda,calendarTheme} from 'react-native-calendars'
 import * as Permissions from 'expo-permissions';
 import * as Calendar from 'expo-calendar';
+import Prompt from 'react-native-input-prompt'
+
+
+import { AppLoading } from 'expo';
+
 var please = ''
 var usernam = ''
 var newPassword
@@ -22,20 +27,45 @@ var wid = Dimensions.get('screen').width
 var heigh = Dimensions.get('screen').height
 var calendartypebeat
 var dates = ['2020-05-21','2020-05-07','2020-05-22']
-var setit
+var setit;
+
+var num=2;
 
 //committing
 
+console.disableYellowBox = true
 
-
-
+let customFonts = {
+  'font': require('./assets/Oswald-Regular.ttf'),
+  'font-bold': require('./assets/Oswald-Bold.ttf')
+};
 
 class HomeScreen extends React.Component{
+
+  constructor(props){
+    super(props);
+    this.state={
+      fontsLoaded: false
+    }
+  }
+
+async _loadFontsAsync() {
+    await Font.loadAsync(customFonts);
+    this.setState({ fontsLoaded: true });
+  }
+
+  componentDidMount() {
+    this._loadFontsAsync();
+  }
+
   static navigationOptions = {
       title: 'Home'
     }
    render(){
      const {navigate} = this.props.navigation;
+
+if (this.state.fontsLoaded){
+
    return (
    <  View style={styles.container}>
    <LinearGradient
@@ -49,6 +79,7 @@ class HomeScreen extends React.Component{
            }}
            />
            <Image source ={Unknown3} style={styles.logo} />
+    
            <TouchableOpacity
       onPress={() =>
           navigate('Login')
@@ -66,6 +97,11 @@ class HomeScreen extends React.Component{
 </TouchableOpacity>
            </View>
          )
+      } else {
+        return (
+          <AppLoading/>
+        )
+      }
        }
 
 }
@@ -219,7 +255,7 @@ console.log(setit)
         startDate:setit,
         allDay:true,
         title: item.name}).then(
-          alert("Your sign up for" + item.name + "was successful. please view the event in your device calendar" )
+          alert("Your sign up for " + item.name + " was successful. You can view the event in your device's calendar." )
         ).then(() =>navigate('Dashboard')).then(() =>dateSelect())
       }
       catch(err) {
@@ -238,7 +274,7 @@ console.log(setit)
 renderEmptyData() {
   return (
     <View style={styles.emptyDate}>
-      <Text style ={{fontSize:25}}>This is an empty date! Quickly swipe right to acces the navigation dashboard</Text>
+      <Text style ={{fontSize:25, fontFamily:'font'}}>This is an empty date! Pick another date or swipe right to access the navigation menu.</Text>
     </View>
   );
 }
@@ -291,12 +327,13 @@ class Signup extends React.Component{
            }}
            />
            <Image source ={Unknown3} style={styles.NHSlogo} />
+           <View style={{marginBottom:'12%'}}></View>
 
 
   <View style = {styles.inputView}>
   <TextInput
     style={styles.inputText}
-    placeholder = "  First and last name..."
+    placeholder = "First and last name"
     placeholderTextColor="silver"
     onChangeText={username => this.setState({username })}
     value={this.state.username}/>
@@ -305,7 +342,7 @@ class Signup extends React.Component{
     <View style={styles.inputView} >
     <TextInput
       style={styles.inputText}
-      placeholder = "Grade (11 or 12)..."
+      placeholder = "Grade (e.g. 11 or 12)"
       placeholderTextColor="silver"
       onChangeText={grade => this.setState({grade })}
       value={this.state.grade}/>
@@ -315,7 +352,7 @@ class Signup extends React.Component{
         <View style={styles.inputView} >
         <TextInput
           style={styles.inputText}
-          placeholder = "Email... (school address please)"
+          placeholder = "Email (school address please)"
           placeholderTextColor="silver"
           onChangeText={email => this.setState({ email })}
           value={this.state.email}
@@ -328,7 +365,7 @@ class Signup extends React.Component{
           <View style={styles.inputView} >
             <TextInput
               style={styles.inputText}
-              placeholder = "Password..."
+              placeholder = "Password"
               textContentType="newPassword"
               secureTextEntry={true}
               placeholderTextColor="silver"
@@ -369,7 +406,7 @@ class Signup extends React.Component{
               onPress = {() => navigate('Home')}
 
 />
-<AntDesign name='home'
+<Feather name='arrow-left'
 onPress = {() =>navigate('Home')}
 size = {65}/>
 
@@ -409,10 +446,12 @@ password:'',
            }}
            />
               <Image source ={Unknown3} style={styles.logo2} />
+              <View style={{marginBottom:'10%'}}>
+              </View>
          <View style={styles.inputView} >
          <TextInput
            style={styles.inputText}
-           placeholder = "Email..."
+           placeholder = "Email"
            placeholderTextColor="silver"
            onChangeText={email => this.setState({ email })}
            value={this.state.email}
@@ -424,7 +463,7 @@ password:'',
            <View style={styles.inputView} >
              <TextInput
                style={styles.inputText}
-               placeholder = "password"
+               placeholder = "Password"
                textContentType="newPassword"
                secureTextEntry={true}
                placeholderTextColor="silver"
@@ -450,12 +489,14 @@ password:'',
                >
 
 
-               <Text style={ styles.buttontext }>Log in </Text>
+               <Text style={ styles.buttontext }>Log In </Text>
 
                <LinearGradient colors={['#43D4FF', '#38ABFD', '#2974FA']}
                >
                </LinearGradient>
                </TouchableOpacity>
+               <View style={{ marginTop:'10%'}}></View>
+
 
                               <HomButton
                               text = "home"
@@ -465,7 +506,7 @@ password:'',
 
 
 
-               <AntDesign name='home'
+               <Feather name='arrow-left'
                onPress = {() =>navigate('Home')}
                size = {65}/>
            </View>
@@ -505,45 +546,32 @@ class  DashboardScreen extends React.Component{
 
  </LinearGradient>
  <View style = {{bottom:"3.5%"}}>
- <Text style = {{fontSize:48}}> Dashboard </Text>
+ <Text style = {{fontSize:40, fontFamily:'font-bold', fontWeight: 'normal',color:'white'}}>Dashboard</Text>
  </View>
- <Feather name='menu' size={33} onPress={()=> this.props.navigation.openDrawer()} style={{right:"40%",top:"-10%",color:'#fff'}}/>
-
-  <Text style = {{fontSize:35,color:"#fff",fontFamily:"AppleSDGothicNeo-Bold"}}> Welcome Back {please}. There are quite a few volunteer events available for your NHS hours!</Text>
-
+ <Feather name='menu' size={33} onPress={()=> this.props.navigation.openDrawer()} style={{right:"38%",top:"-10.5%",color:'#fff'}}/>
+          <View style={{marginHorizontal:'4%'}}>
+  <Text style = {{fontSize:35,color:"#fff",fontFamily:"font", textAlign:'center'}}> Welcome back, {please}. There are many opportunities for you to volunteer!</Text>
+  </View>
  <View style = {{bottom:"-10%"}}>
- <Text style = {{fontSize:35,color:"#fff",fontFamily:"AppleSDGothicNeo-Bold"}}>Keep Working hard! You are almost there! Women Empowerment! </Text>
+ <Text style = {{fontSize:35,color:"#fff",fontFamily:"font"}}>Keep working hard!</Text>
  </View>
 
  <Signoutbutton
- onPress = {() =>Alert.alert(
-   'Sign out',
-   'Would you like to sign out?',
-   [
-     { text: 'Ok', onPress: () => Firebase.auth().signOut().then(() =>navigate('Home'))},
-     {
-       text: 'Cancel',
-       onPress: () => console.log('Cancel Pressed'),
-       style: 'cancel',
-     },
-     { cancelable: false }
- ]
-   // Sign-out successful.);
- )}/>
- <Feather name = 'arrow-left'
- size = {85}
- style={{right:"1%",top:"1%",color:'#fff'}}
+/>
+ <Octicons name = 'sign-out'
+ size = {70}
+ style={{left:"1.5%",top:"2.7%",color:'#fff'}}
  onPress = {()=> Alert.alert(
-   'Sign out',
+   'Sign Out',
    'Would you like to sign out?',
    [
-     { text: 'Ok', onPress: () => Firebase.auth().signOut().then(() =>navigate('Home'))},
+     { text: 'Sign Out', onPress: () => Firebase.auth().signOut().then(() =>navigate('Home'))},
      {
        text: 'Cancel',
        onPress: () => console.log('Cancel Pressed'),
        style: 'cancel',
      },
-     { cancelable: false }
+    
  ]
    // Sign-out successful.);
  )}/>
@@ -556,6 +584,15 @@ class  DashboardScreen extends React.Component{
          }
        }
        class  Profile extends React.Component{
+
+        constructor(props){
+          super(props)
+          this.state={
+            uri:'https://www.kindpng.com/picc/m/695-6955645_female-user-female-user-icon-png-transparent-png.png',
+            visible:false,
+            text:''
+          }
+        }
 
          static navigationOptions = {
            title: 'Profile',
@@ -583,42 +620,89 @@ class  DashboardScreen extends React.Component{
 
         </LinearGradient>
         <View style = {{bottom:"3.5%"}}>
-        <Text style = {{fontSize:48,color:'#fff'}}> Profile </Text>
+        <Text style = {{fontSize:40,color:'#fff', fontFamily:'font-bold'}}> Profile </Text>
         </View>
-        <Feather name='menu' size={33} onPress={()=> this.props.navigation.openDrawer()} style={{right:"40%",top:"-10%",color:'#fff'}}/>
+        <Feather name='menu' size={33} onPress={()=> this.props.navigation.openDrawer()} style={{right:"38%",top:"-10.5%",color:'#fff'}}/>
 
-        <Signoutbutton
-        onPress = {() =>Alert.alert(
-          'Sign out',
-          'Would you like to sign out?',
-          [
-            { text: 'Ok', onPress: () => Firebase.auth().signOut().then(() =>navigate('Home'))},
-            {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed'),
-              style: 'cancel',
-            },
-            { cancelable: false }
-        ]
-          // Sign-out successful.);
-        )}/>
-        <Feather name = 'arrow-left'
-        size = {85}
-        style={{right:"1%",top:"1%",color:'#fff'}}
-        onPress = {()=> Alert.alert(
-          'Sign out',
-          'Would you like to sign out?',
-          [
-            { text: 'Ok', onPress: () => Firebase.auth().signOut().then(() =>navigate('Home'))},
-            {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed'),
-              style: 'cancel',
-            },
-            { cancelable: false }
-        ]
-          // Sign-out successful.);
-        )}/>
+
+        <Image source={{uri: this.state.uri}} style={{width: 150, height:150, borderRadius:75}}/>
+            <View style={{marginVertical:'3%'}}>
+
+            </View>
+        <View>
+        <MaterialIcons name = 'switch-camera'
+ size = {30}
+ style={{color:'#fff'}}
+ onPress={()=>this.setState({visible:true})}
+/>
+
+<Prompt
+    visible={this.state.visible}
+    titleStyle={{fontFamily:'font', fontWeight:'normal',fontSize:20}}
+    cancelButtonTextStyle={{fontFamily:'font', fontWeight:'normal',fontSize:20}}
+    submitButtonTextStyle={{fontFamily:'font', fontWeight:'normal',fontSize:20}}
+    title="Paste a url to replace your profile image."
+    placeholder="Paste a url..."
+    onCancel={() =>
+        this.setState({
+            visible: !this.state.visible
+        })
+    }
+    onSubmit={text =>
+        this.setState({
+            uri: text,
+            visible: !this.state.visible
+        })
+    }
+/>
+
+</View>
+<View style={{marginVertical:'1.39%'}}>
+
+ </View>
+<View>
+  <Text style={{fontFamily:'font', fontSize:35, color:'#fff'}}>
+    {please}
+  </Text>
+</View>
+
+<View>
+  <Text style={{fontFamily:'font', fontSize:22, color:'#fff'}}>
+    Empowerer
+  </Text>
+</View>
+<View style={{marginVertical:'4%'}}>
+
+ </View>
+<View style={{marginHorizontal:'5%',}}>
+  <Text style={{fontFamily:'font', fontSize:25, color:'#fff',  textAlign:'center'}}>
+    You have completed {num} volunteer events. Well done!
+  </Text>
+</View>
+
+<View style={{marginBottom:'-12%'}}></View>
+          
+        
+
+        <Signoutbutton/>
+        <Octicons name = 'sign-out'
+ size = {70}
+ style={{left:"1.5%",top:"2.7%",color:'#fff'}}
+ onPress = {()=> Alert.alert(
+   'Sign Out',
+   'Would you like to sign out?',
+   [
+     { text: 'Sign Out', onPress: () => Firebase.auth().signOut().then(() =>navigate('Home'))},
+     {
+       text: 'Cancel',
+       onPress: () => console.log('Cancel Pressed'),
+       style: "cancel",
+     }
+ ]
+   // Sign-out successful.);
+ )}/>
+
+<Image source={{uri: ''}} resizeMode='center'/>
 
 
 
@@ -635,8 +719,9 @@ class  DashboardScreen extends React.Component{
 
 
        const CustomDrawerComponent = (props) => (
-         <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-           <View style={{height:150, backgroundColor: '#fff', alignItems:'center', justifyContent: 'center'}}>
+         <SafeAreaView style={{flex: 1, backgroundColor: '#ffe5fc'}}>
+           <View style={{height:150, backgroundColor: '#ffe5fc', alignItems:'center', justifyContent: 'center', marginTop:'2%'}}>
+           <Image source={require('./assets/imageedit_1_4305038960.png')} style={{height: 100, width: 200}}/>
            </View>
            <ScrollView>
              <DrawerItems {...props}/>
@@ -661,6 +746,8 @@ class  DashboardScreen extends React.Component{
   contentOptions: {
     labelStyle: {
       fontSize: 15,
+      fontFamily:'font',
+      fontWeight: 'normal',
     },
   },
 
@@ -728,7 +815,7 @@ borderColor:'#4169e1'
 },
 intromessage:{
   fontSize:33,
-  fontFamily:'Futura',
+  fontFamily:'font',
   top:"10%",
 },
 NHSlogo:{
@@ -747,31 +834,32 @@ NHSlogo2:{
 },
 buttonStyle:{
 
-  backgroundColor: 'red',
+  backgroundColor: '#a7252d',
   width:265,
   height:70,
   top:200,
 
 },
 buttontext:{
-fontSize: 30,
+fontSize: 25,
 color: '#fff',
 alignItems:'center',
+fontFamily: 'font'
 },
 signUpStyle:{
 width:"80%",
   backgroundColor:"black",
   borderRadius:25,
-  height:50,
+  height:"7%",
   alignItems:"center",
   justifyContent:"center",
   top:170
 },
 signUpStyle2:{
 width:"80%",
-  backgroundColor:"red",
+  backgroundColor:"#a7252d",
   borderRadius:25,
-  height:"6%",
+  height:"7%",
   alignItems:"center",
   justifyContent:"center",
   top:"28%"
@@ -780,16 +868,16 @@ signUpStyle3:{
 width:"80%",
   backgroundColor:"black",
   borderRadius:25,
-  height:"6%",
+  height:"7%",
   alignItems:"center",
   justifyContent:"center",
   top:"13%"
 },
 signUpStyle4:{
 width:"80%",
-  backgroundColor:"red",
+  backgroundColor:"#a7252d",
   borderRadius:25,
-  height:"6%",
+  height:"7%",
   alignItems:"center",
   justifyContent:"center",
   top:"12%"
@@ -807,7 +895,7 @@ marginBottom:-55,
 
 inputView:{
   width:"90%",
-  backgroundColor:"#465881",
+  backgroundColor:"#5c345c",
   borderRadius:25,
   height:"6%",
   marginBottom:"10%",
@@ -816,8 +904,10 @@ inputView:{
   top:"10%"
 },
 inputText:{
+  marginTop:'1.2%',
   height:50,
-  color:"white"
+  color:"white",
+  fontFamily:'font'
 },
 dashboard1typebeat:{
   width:"80%",
@@ -840,7 +930,8 @@ backgroundColor: 'white',
  emptyDate: {
    height: 115,
    flex:1,
-   paddingTop: 30
+   paddingTop: 20,
+   marginHorizontal:'5%',
  }
 
 });
