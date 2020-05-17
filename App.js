@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, Image,TouchableOpacity,TextInput,Alert,Linking,Button,SafeAreaView, ScrollView,Dimensions } from 'react-native';
 import * as Font from 'expo-font'
+import Unknown3 from './assets/dteimage.png';
 import Firebase from './components/firebase.js'
 import 'react-native-gesture-handler';
 import { createAppContainer, createSwitchNavigator, } from 'react-navigation';
@@ -45,6 +46,7 @@ class HomeScreen extends React.Component{
              height:"100%",
            }}
            />
+           <Image source ={Unknown3} style={styles.logo} />
            <TouchableOpacity
       onPress={() =>
           navigate('Login')
@@ -285,6 +287,7 @@ class Signup extends React.Component{
              height:"100%",
            }}
            />
+           <Image source ={Unknown3} style={styles.NHSlogo} />
 
 
   <View style = {styles.inputView}>
@@ -402,6 +405,7 @@ password:'',
              height:"100%",
            }}
            />
+              <Image source ={Unknown3} style={styles.logo} />
          <View style={styles.inputView} >
          <TextInput
            style={styles.inputText}
@@ -431,9 +435,10 @@ password:'',
                <TouchableOpacity
                style = {styles.signUpStyle3}
                onPress = {() =>
+                 Firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error){alert("There has been an issue logging in. Please check that all details were entered correctly. ") }).then(() =>
                     Firebase.database().ref('/users/' + Firebase.auth().currentUser.uid + '/username').once('value', function(snapshot) {
                             please = (snapshot.val())
-}).then(() =>     navigate("Dashboard"))
+})).then(() =>     navigate("Dashboard"))
 
 
 
@@ -703,10 +708,10 @@ const styles = StyleSheet.create({
   justifyContent: 'center',
 },
 logo:{
-  height:170,
-  width:175,
+  height:"20%",
+  width:"63%",
   position:'absolute',
-  top: "3%",
+  top: "13%",
 borderColor:'#4169e1'
 
 },
@@ -717,9 +722,9 @@ intromessage:{
 },
 NHSlogo:{
   height:"15.1%",
-  width:"33.2%",
+  width:"48.2%",
   position:'absolute',
-  top:"26.5%",
+  top:"6.5%",
 
 },
 NHSlogo2:{
