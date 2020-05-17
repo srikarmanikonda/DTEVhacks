@@ -162,7 +162,8 @@ console.log(calendartypebeat)
            //    '2017-05-25': {color: 'gray'},
            //    '2017-05-26': {endingDay: true, color: 'gray'}}}
            // monthFormat={'yyyy'}
-            theme={{calendarBackground: 'black', agendaKnobColor: 'red', dayTextColor: '#fff',   dotColor: '#fff',  monthTextColor: '#fff'}}
+            theme={{calendarBackground: 'black', agendaKnobColor: 'white', dayTextColor: '#fff',   dotColor: '#fff',  monthTextColor: '#fff'}}
+            
            style={{height:"100%",width:"100%"}}
 
             hideExtraDays={true}
@@ -405,7 +406,7 @@ password:'',
              height:"100%",
            }}
            />
-              <Image source ={Unknown3} style={styles.logo} />
+              <Image source ={Unknown3} style={styles.logo2} />
          <View style={styles.inputView} >
          <TextInput
            style={styles.inputText}
@@ -708,10 +709,18 @@ const styles = StyleSheet.create({
   justifyContent: 'center',
 },
 logo:{
+  height:"24%",
+  width:"75%",
+  position:'absolute',
+  top: "11%",
+borderColor:'#4169e1'
+
+},
+logo2:{
   height:"20%",
   width:"63%",
   position:'absolute',
-  top: "13%",
+  top: "8%",
 borderColor:'#4169e1'
 
 },
