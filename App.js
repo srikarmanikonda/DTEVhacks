@@ -28,8 +28,8 @@ var heigh = Dimensions.get('screen').height
 var calendartypebeat
 var dates = ['2020-05-21','2020-05-07','2020-05-22']
 var setit;
-
-var num=2;
+var num = 0;
+var saveit = ''
 
 //committing
 
@@ -79,7 +79,7 @@ if (this.state.fontsLoaded){
            }}
            />
            <Image source ={Unknown3} style={styles.logo} />
-    
+
            <TouchableOpacity
       onPress={() =>
           navigate('Login')
@@ -201,7 +201,7 @@ console.log(calendartypebeat)
            //    '2017-05-26': {endingDay: true, color: 'gray'}}}
            // monthFormat={'yyyy'}
             theme={{calendarBackground: 'black', agendaKnobColor: 'white', dayTextColor: '#fff',   dotColor: '#fff',  monthTextColor: '#fff'}}
-            
+
            style={{height:"100%",width:"100%"}}
 
             hideExtraDays={true}
@@ -289,6 +289,10 @@ timeToString(time) {
 }
 
 }
+
+
+
+
 
 
 
@@ -384,7 +388,10 @@ class Signup extends React.Component{
                     username:usernam,
                     email: Firebase.auth().currentUser.email,
                     password :newPassword,
-                    grade:grad
+                    grade:grad,
+                    eventnum:0,
+                    uri:'',
+
 
                   })
 
@@ -480,6 +487,10 @@ password:'',
                  Firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error){alert("There has been an issue logging in. Please check that all details were entered correctly. ") }).then(() =>
                     Firebase.database().ref('/users/' + Firebase.auth().currentUser.uid + '/username').once('value', function(snapshot) {
                             please = (snapshot.val())
+})).then(() => Firebase.database().ref('/users/' + Firebase.auth().currentUser.uid + '/eventnum').once('value', function(snapshot) {
+   num = (snapshot.val())
+})).then(()=>  Firebase.database().ref('/users/' + Firebase.auth().currentUser.uid + '/uri').once('value', function(snapshot) {
+   saveit = (snapshot.val())
 })).then(() =>     navigate("Dashboard"))
 
 
@@ -515,7 +526,143 @@ password:'',
 
 }
 
+class  Profile extends React.Component{
 
+ constructor(props){
+   super(props)
+   this.state={
+     uri:'https://www.kindpng.com/picc/m/695-6955645_female-user-female-user-icon-png-transparent-png.png',
+     visible:false,
+     text:''
+   }
+ }
+
+  static navigationOptions = {
+    title: 'Profile',
+  };
+
+
+  render(){
+    saveit = this.state.text
+    const {navigate} = this.props.navigation;
+    async function prof(){
+      Firebase.database().ref('users/' + Firebase.auth().currentUser.uid).set({
+        uri:saveit,
+
+      })
+    }
+    prof()
+
+ return(
+ <View
+ style={styles.container}>
+  <LinearGradient
+  colors = {['#360e27','#932323','#4e3966']}
+  style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            height:"100%",
+          }}
+     >
+
+
+ </LinearGradient>
+ <View style = {{bottom:"3.5%"}}>
+ <Text style = {{fontSize:40,color:'#fff', fontFamily:'font-bold'}}> Profile </Text>
+ </View>
+ <Feather name='menu' size={33} onPress={()=> this.props.navigation.openDrawer()} style={{right:"38%",top:"-10.5%",color:'#fff'}}/>
+
+
+ <Image source={{uri: this.state.uri}} style={{width: 150, height:150, borderRadius:75}}/>
+     <View style={{marginVertical:'3%'}}>
+
+     </View>
+ <View>
+ <MaterialIcons name = 'switch-camera'
+size = {30}
+style={{color:'#fff'}}
+onPress={()=>this.setState({visible:true})}
+/>
+
+<Prompt
+visible={this.state.visible}
+titleStyle={{fontFamily:'font', fontWeight:'normal',fontSize:20}}
+cancelButtonTextStyle={{fontFamily:'font', fontWeight:'normal',fontSize:20}}
+submitButtonTextStyle={{fontFamily:'font', fontWeight:'normal',fontSize:20}}
+title="Paste a url to replace your profile image."
+placeholder="Paste a url..."
+onCancel={() =>
+ this.setState({
+     visible: !this.state.visible
+ })
+}
+onSubmit={
+  text =>
+ this.setState({
+     uri: text ,
+     visible: !this.state.visible
+ })
+
+}
+
+/>
+</View>
+<View style={{marginVertical:'1.39%'}}>
+
+</View>
+<View>
+<Text style={{fontFamily:'font', fontSize:35, color:'#fff'}}>
+{please}
+</Text>
+</View>
+
+<View>
+<Text style={{fontFamily:'font', fontSize:22, color:'#fff'}}>
+Empowerer
+</Text>
+</View>
+<View style={{marginVertical:'4%'}}>
+
+</View>
+<View style={{marginHorizontal:'5%',}}>
+<Text style={{fontFamily:'font', fontSize:25, color:'#fff',  textAlign:'center'}}>
+You have completed {num} volunteer events. Well done!
+</Text>
+</View>
+
+<View style={{marginBottom:'-12%'}}></View>
+
+
+
+ <Signoutbutton/>
+ <Octicons name = 'sign-out'
+size = {70}
+style={{left:"1.5%",top:"2.7%",color:'#fff'}}
+onPress = {()=> Alert.alert(
+'Sign Out',
+'Would you like to sign out?',
+[
+{ text: 'Sign Out', onPress: () => Firebase.auth().signOut().then(() =>navigate('Home'))},
+{
+text: 'Cancel',
+onPress: () => console.log('Cancel Pressed'),
+style: "cancel",
+}
+]
+// Sign-out successful.);
+)}/>
+
+<Image source={{uri: ''}} resizeMode='center'/>
+
+
+
+
+         </View>
+           );
+         }
+       }
 
 
 class  DashboardScreen extends React.Component{
@@ -571,7 +718,7 @@ class  DashboardScreen extends React.Component{
        onPress: () => console.log('Cancel Pressed'),
        style: 'cancel',
      },
-    
+
  ]
    // Sign-out successful.);
  )}/>
@@ -583,135 +730,6 @@ class  DashboardScreen extends React.Component{
            );
          }
        }
-       class  Profile extends React.Component{
-
-        constructor(props){
-          super(props)
-          this.state={
-            uri:'https://www.kindpng.com/picc/m/695-6955645_female-user-female-user-icon-png-transparent-png.png',
-            visible:false,
-            text:''
-          }
-        }
-
-         static navigationOptions = {
-           title: 'Profile',
-         };
-
-
-         render(){
-
-           const {navigate} = this.props.navigation;
-
-        return(
-        <View
-        style={styles.container}>
-         <LinearGradient
-         colors = {['#360e27','#932323','#4e3966']}
-         style={{
-                   position: 'absolute',
-                   left: 0,
-                   right: 0,
-                   top: 0,
-                   height:"100%",
-                 }}
-            >
-
-
-        </LinearGradient>
-        <View style = {{bottom:"3.5%"}}>
-        <Text style = {{fontSize:40,color:'#fff', fontFamily:'font-bold'}}> Profile </Text>
-        </View>
-        <Feather name='menu' size={33} onPress={()=> this.props.navigation.openDrawer()} style={{right:"38%",top:"-10.5%",color:'#fff'}}/>
-
-
-        <Image source={{uri: this.state.uri}} style={{width: 150, height:150, borderRadius:75}}/>
-            <View style={{marginVertical:'3%'}}>
-
-            </View>
-        <View>
-        <MaterialIcons name = 'switch-camera'
- size = {30}
- style={{color:'#fff'}}
- onPress={()=>this.setState({visible:true})}
-/>
-
-<Prompt
-    visible={this.state.visible}
-    titleStyle={{fontFamily:'font', fontWeight:'normal',fontSize:20}}
-    cancelButtonTextStyle={{fontFamily:'font', fontWeight:'normal',fontSize:20}}
-    submitButtonTextStyle={{fontFamily:'font', fontWeight:'normal',fontSize:20}}
-    title="Paste a url to replace your profile image."
-    placeholder="Paste a url..."
-    onCancel={() =>
-        this.setState({
-            visible: !this.state.visible
-        })
-    }
-    onSubmit={text =>
-        this.setState({
-            uri: text,
-            visible: !this.state.visible
-        })
-    }
-/>
-
-</View>
-<View style={{marginVertical:'1.39%'}}>
-
- </View>
-<View>
-  <Text style={{fontFamily:'font', fontSize:35, color:'#fff'}}>
-    {please}
-  </Text>
-</View>
-
-<View>
-  <Text style={{fontFamily:'font', fontSize:22, color:'#fff'}}>
-    Empowerer
-  </Text>
-</View>
-<View style={{marginVertical:'4%'}}>
-
- </View>
-<View style={{marginHorizontal:'5%',}}>
-  <Text style={{fontFamily:'font', fontSize:25, color:'#fff',  textAlign:'center'}}>
-    You have completed {num} volunteer events. Well done!
-  </Text>
-</View>
-
-<View style={{marginBottom:'-12%'}}></View>
-          
-        
-
-        <Signoutbutton/>
-        <Octicons name = 'sign-out'
- size = {70}
- style={{left:"1.5%",top:"2.7%",color:'#fff'}}
- onPress = {()=> Alert.alert(
-   'Sign Out',
-   'Would you like to sign out?',
-   [
-     { text: 'Sign Out', onPress: () => Firebase.auth().signOut().then(() =>navigate('Home'))},
-     {
-       text: 'Cancel',
-       onPress: () => console.log('Cancel Pressed'),
-       style: "cancel",
-     }
- ]
-   // Sign-out successful.);
- )}/>
-
-<Image source={{uri: ''}} resizeMode='center'/>
-
-
-
-
-                </View>
-                  );
-                }
-              }
-
 
 
 
